@@ -11,10 +11,16 @@ container=$(basename "${dir}")
 pgpwd=$1
 image="${container}:latest"
 bind_address='127.0.0.1:5433:5432'
+volume='alexandria_pgdata:/var/lib/postgresql/data'
 
 if [ "${pgpwd}Z" = 'Z' ];
 then
   pgpwd='postgres'
 fi
 
-docker run --name "${container}" --rm -P -p "${bind_address}" -e POSTGRES_PASSWORD="${pgpwd}" -d "${image}"
+docker run --rm -P \
+  --name "${container}" \
+  -p "${bind_address}" \
+  -e POSTGRES_PASSWORD="${pgpwd}" \
+  -v "${volume}" \
+  -d "${image}"
