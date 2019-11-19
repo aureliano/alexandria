@@ -9,7 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -28,7 +28,7 @@ public class User {
   @Column(name = "password", nullable = false, length = 25)
   private String password;
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   private List<Role> roles;
 
   public long getId () {

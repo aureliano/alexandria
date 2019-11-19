@@ -1,11 +1,15 @@
 package br.org.alexandria.websecurity.domain;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -24,8 +28,8 @@ public class Role {
   @Column(name = "description", nullable = false, length = 100)
   private String description;
 
-  @ManyToOne(targetEntity = Role.class)
-  private Role role;
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  private List<User> users;
 
   public long getId () {
     return id;
@@ -51,12 +55,12 @@ public class Role {
     this.description = description;
   }
 
-  public Role getRole () {
-    return role;
+  public List<User> getUsers () {
+    return users;
   }
 
-  public void setRole (Role role) {
-    this.role = role;
+  public void setUsers (List<User> users) {
+    this.users = users;
   }
 
   @Override
