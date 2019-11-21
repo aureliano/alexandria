@@ -11,7 +11,10 @@ container=$(basename "${dir}")
 pgpwd=$1
 image="${container}:latest"
 bind_address='127.0.0.1:5433:5432'
-volume='alexandria_pgdata:/var/lib/postgresql/data'
+volume='alexandria_pgdata'
+
+docker volume create "${volume}"
+volume="${volume}:/var/lib/postgresql/data"
 
 if [ "${pgpwd}Z" = 'Z' ];
 then
