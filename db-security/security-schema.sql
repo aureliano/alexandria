@@ -11,7 +11,7 @@ CREATE TABLE users(
   password VARCHAR(25) NOT NULL
 );
 
-CREATE TABLE users_roles(
+CREATE TABLE user_roles_users(
   role_id BIGINT NOT NULL,
   user_id BIGINT NOT NULL,
   CONSTRAINT user_roles_fk FOREIGN KEY(role_id) REFERENCES user_roles(id),
