@@ -2,7 +2,6 @@ package br.org.alexandria.websecurity.domain;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,7 +27,7 @@ public class Role {
   @Column(name = "description", nullable = false, length = 100)
   private String description;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
   private List<User> users;
 
   public long getId () {

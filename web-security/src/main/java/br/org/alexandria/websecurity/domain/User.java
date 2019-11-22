@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -28,7 +30,10 @@ public class User {
   @Column(name = "password", nullable = false, length = 25)
   private String password;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable(name = "user_roles_users", joinColumns = {
+      @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+          @JoinColumn(name = "role_id") })
   private List<Role> roles;
 
   public long getId () {
