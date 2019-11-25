@@ -1,12 +1,16 @@
 package br.org.alexandria.websecurity.controller;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,5 +43,24 @@ public class RoleController {
 
     URI uri = WebHelper.toURI ("/roles/" + dto.getId ());
     return ResponseEntity.created (uri).body (dto);
+  }
+
+  @PutMapping(path = "/roles/{id}", consumes = "application/json", produces = {
+      "application/json" })
+  public @ResponseBody ResponseEntity<RoleDTO> rolesUpdate (
+      @PathVariable Long id, @RequestBody RoleDTO dto) {
+    Optional<Role> optional = this.roleRepository.findById (id);
+    if (!optional.isPresent ()) {
+      return ResponseEntity.notFound ().build ();
+    }
+
+    Role role = optional.get ();
+    role.setName (dto.getRole ());
+    role.setDescription (dto.getDescription ());
+
+    this.roleRepository.save (role);
+    dto.setId (role.getId ());
+
+    return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
 }
