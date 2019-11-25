@@ -92,13 +92,15 @@ public class User {
     if (this.name == null) {
       if (other.name != null)
         return false;
-    } else if (!this.name.equals (other.name))
+    } else if (!this.name.equals (other.name)) {
       return false;
+    }
     if (this.password == null) {
       if (other.password != null)
         return false;
-    } else if (!this.password.equals (other.password))
+    } else if (!this.password.equals (other.password)) {
       return false;
+    }
     return true;
   }
 }
