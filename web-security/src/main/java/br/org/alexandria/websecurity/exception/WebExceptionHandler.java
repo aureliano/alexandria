@@ -22,4 +22,13 @@ public class WebExceptionHandler extends ResponseEntityExceptionHandler {
     return handleExceptionInternal (ex, rootCause.getMessage (),
         new HttpHeaders (), HttpStatus.CONFLICT, request);
   }
+
+  @ExceptionHandler(value = { WebSecurityException.class })
+  protected ResponseEntity<Object> handleWebSecurityException (
+      WebSecurityException ex, WebRequest request) {
+
+    Throwable rootCause = WebHelper.findCause (ex);
+    return handleExceptionInternal (ex, rootCause.getMessage (),
+        new HttpHeaders (), ex.getHttpStatus (), request);
+  }
 }
