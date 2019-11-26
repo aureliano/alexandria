@@ -2,6 +2,7 @@ package br.org.alexandria.websecurity.service;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import br.org.alexandria.websecurity.domain.Functionality;
 import br.org.alexandria.websecurity.domain.Role;
+import br.org.alexandria.websecurity.dto.FunctionalityDTO;
 import br.org.alexandria.websecurity.dto.RoleDTO;
 import br.org.alexandria.websecurity.exception.WebSecurityException;
 import br.org.alexandria.websecurity.repository.FunctionalityRepository;
@@ -100,6 +102,14 @@ public class RoleService {
     dto.setId (role.getId ());
     dto.setRole (role.getName ());
     dto.setDescription (role.getDescription ());
+    dto.setFunctionalities (new HashSet<FunctionalityDTO> ());
+
+    role.getFunctionalities ().forEach (e -> {
+      FunctionalityDTO f = new FunctionalityDTO ();
+      f.setId (e.getId ());
+      f.setFunctionality (e.getName ());
+      dto.getFunctionalities ().add (f);
+    });
 
     return dto;
   }
