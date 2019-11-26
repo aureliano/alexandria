@@ -4,11 +4,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
+
 import br.org.alexandria.websecurity.exception.WebSecurityException;
 
+@Component
 public final class WebHelper {
 
-  public static URI toURI (String path) {
+  public URI toURI (String path) {
     try {
       return new URI (path);
     } catch (URISyntaxException e) {
@@ -16,7 +19,7 @@ public final class WebHelper {
     }
   }
 
-  public static Throwable findCause (Throwable throwable) {
+  public Throwable findCause (Throwable throwable) {
     Objects.requireNonNull (throwable);
     Throwable rootCause = throwable;
     while ((rootCause.getCause () != null

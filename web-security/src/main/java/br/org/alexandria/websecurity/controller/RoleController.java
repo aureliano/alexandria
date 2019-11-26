@@ -31,6 +31,9 @@ public class RoleController {
   @Autowired
   private RoleService roleService;
 
+  @Autowired
+  private WebHelper webHelper;
+
   @GetMapping(path = "/roles", produces = { "application/json" })
   public @ResponseBody Iterable<Role> roles () {
     return this.roleRepository.findAll ();
@@ -47,7 +50,7 @@ public class RoleController {
     this.roleRepository.save (role);
     dto.setId (role.getId ());
 
-    URI uri = WebHelper.toURI ("/roles/" + dto.getId ());
+    URI uri = this.webHelper.toURI ("/roles/" + dto.getId ());
     return ResponseEntity.created (uri).body (dto);
   }
 
