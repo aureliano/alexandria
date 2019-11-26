@@ -35,7 +35,7 @@ public class UserController {
 
   @PostMapping(path = "/v1/users", consumes = "application/json", produces = {
       "application/json" })
-  public @ResponseBody ResponseEntity<UserDTO> rolesNew (
+  public @ResponseBody ResponseEntity<UserDTO> usersNew (
       @RequestBody UserDTO dto) {
     Long id = this.userService.registerUser (dto);
     dto.setId (id);
@@ -47,7 +47,7 @@ public class UserController {
   }
 
   @PutMapping(path = "/v1/users/{id}", consumes = "application/json")
-  public @ResponseBody ResponseEntity<UserDTO> rolesUpdate (
+  public @ResponseBody ResponseEntity<UserDTO> usersUpdate (
       @PathVariable Long id, @RequestBody UserDTO dto) {
     this.userService.updateUser (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
