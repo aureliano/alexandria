@@ -1,10 +1,13 @@
 package br.org.alexandria.websecurity.dto;
 
+import java.util.Set;
+
 public class RoleDTO {
 
   private Long id;
   private String role;
   private String description;
+  private Set<FunctionalityDTO> functionalities;
 
   public Long getId () {
     return id;
@@ -28,5 +31,13 @@ public class RoleDTO {
 
   public void setDescription (String description) {
     this.description = description;
+  }
+
+  public Set<FunctionalityDTO> getFunctionalities () {
+    return functionalities;
+  }
+
+  public void setFunctionalities (Set<FunctionalityDTO> functionalities) {
+    this.functionalities = functionalities;
   }
 }

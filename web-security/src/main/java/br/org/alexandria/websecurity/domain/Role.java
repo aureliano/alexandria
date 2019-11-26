@@ -37,7 +37,7 @@ public class Role {
   @JoinTable(name = "roles_functionalities", joinColumns = {
       @JoinColumn(name = "functionality_id") }, inverseJoinColumns = {
           @JoinColumn(name = "role_id") })
-  private List<Role> functionalities;
+  private List<Functionality> functionalities;
 
   public long getId () {
     return id;
@@ -71,11 +71,11 @@ public class Role {
     this.users = users;
   }
 
-  public List<Role> getFunctionalities () {
+  public List<Functionality> getFunctionalities () {
     return functionalities;
   }
 
-  public void setFunctionalities (List<Role> functionalities) {
+  public void setFunctionalities (List<Functionality> functionalities) {
     this.functionalities = functionalities;
   }
 

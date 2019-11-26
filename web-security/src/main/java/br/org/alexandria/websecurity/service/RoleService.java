@@ -12,10 +12,13 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import br.org.alexandria.websecurity.domain.Functionality;
 import br.org.alexandria.websecurity.domain.Role;
 import br.org.alexandria.websecurity.dto.RoleDTO;
 import br.org.alexandria.websecurity.exception.WebSecurityException;
+import br.org.alexandria.websecurity.repository.FunctionalityRepository;
 import br.org.alexandria.websecurity.repository.RoleRepository;
 
 @Service
@@ -28,6 +31,9 @@ public class RoleService {
 
   @Autowired
   private RoleRepository roleRepository;
+
+  @Autowired
+  private FunctionalityRepository functionalityRepository;
 
   public Integer countUserRoles (Long roleId) {
     Query query = em.createNativeQuery (COUNT_ROLE_REFERENCES);
@@ -53,6 +59,7 @@ public class RoleService {
     Role role = new Role ();
     role.setName (dto.getRole ());
     role.setDescription (dto.getDescription ());
+    role.setFunctionalities (this.findFunctionalities (dto));
 
     this.roleRepository.save (role);
     return role.getId ();
@@ -64,9 +71,15 @@ public class RoleService {
       throw new WebSecurityException ("Role not found.", HttpStatus.NOT_FOUND);
     }
 
+    if (CollectionUtils.isEmpty (dto.getFunctionalities ())) {
+      throw new WebSecurityException (
+          "Role must have at least one functionality.", HttpStatus.BAD_REQUEST);
+    }
+
     Role role = optional.get ();
     role.setName (dto.getRole ());
     role.setDescription (dto.getDescription ());
+    role.setFunctionalities (this.findFunctionalities (dto));
 
     this.roleRepository.save (role);
   }
@@ -93,6 +106,24 @@ public class RoleService {
     }
 
     Role role = optional.get ();
+    role.getFunctionalities ().clear ();
     this.roleRepository.delete (role);
+  }
+
+  private List<Functionality> findFunctionalities (RoleDTO dto) {
+    List<Long> ids = new ArrayList<> (dto.getFunctionalities ().size ());
+    dto.getFunctionalities ().forEach (f -> ids.add (f.getId ()));
+
+    Iterable<Functionality> iterableFunctionalities = this.functionalityRepository
+        .findAllById (ids);
+    List<Functionality> functionalities = new ArrayList<> ();
+    iterableFunctionalities.forEach (f -> functionalities.add (f));
+
+    if (functionalities.size () < dto.getFunctionalities ().size ()) {
+      throw new WebSecurityException ("Not all functionalities could be found.",
+          HttpStatus.BAD_REQUEST);
+    }
+
+    return functionalities;
   }
 }
