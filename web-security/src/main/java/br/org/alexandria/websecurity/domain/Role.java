@@ -35,8 +35,8 @@ public class Role {
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinTable(name = "roles_functionalities", joinColumns = {
-      @JoinColumn(name = "functionality_id") }, inverseJoinColumns = {
-          @JoinColumn(name = "role_id") })
+      @JoinColumn(name = "role_id") }, inverseJoinColumns = {
+          @JoinColumn(name = "functionality_id") })
   private List<Functionality> functionalities;
 
   public long getId () {
