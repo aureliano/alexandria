@@ -123,6 +123,16 @@ public class UserService {
     return dto;
   }
 
+  public void deleteUser (Long id) {
+    Optional<User> optional = this.userRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("User not found.", HttpStatus.NOT_FOUND);
+    }
+
+    User user = optional.get ();
+    this.userRepository.delete (user);
+  }
+
   private List<Role> findRoles (UserDTO dto) {
     List<Long> ids = new ArrayList<> (dto.getRoles ().size ());
     dto.getRoles ().forEach (r -> ids.add (r.getId ()));
