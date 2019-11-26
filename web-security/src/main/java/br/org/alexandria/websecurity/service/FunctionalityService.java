@@ -72,4 +72,16 @@ public class FunctionalityService {
 
     return dto;
   }
+
+  public void deleteFunctionality (Long id) {
+    Optional<Functionality> optional = this.functionalityRepository
+        .findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("Functionality not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Functionality role = optional.get ();
+    this.functionalityRepository.delete (role);
+  }
 }
