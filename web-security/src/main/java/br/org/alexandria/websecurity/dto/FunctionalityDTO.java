@@ -1,5 +1,9 @@
 package br.org.alexandria.websecurity.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class FunctionalityDTO {
 
   private Long id;

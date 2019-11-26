@@ -2,6 +2,10 @@ package br.org.alexandria.websecurity.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class UserDTO {
 
   private Long id;
