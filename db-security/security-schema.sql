@@ -8,7 +8,7 @@ CREATE TABLE user_roles(
 CREATE TABLE users(
   id BIGINT NOT NULL PRIMARY KEY,
   name VARCHAR(25) NOT NULL,
-  password VARCHAR(25) NOT NULL
+  password VARCHAR(130) NOT NULL
 );
 
 CREATE TABLE user_roles_users(
