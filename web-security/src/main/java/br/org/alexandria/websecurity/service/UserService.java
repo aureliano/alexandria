@@ -86,7 +86,7 @@ public class UserService {
           HttpStatus.BAD_REQUEST);
     }
 
-    User user = new User ();
+    User user = optional.get ();
     user.setName (dto.getName ());
     user.setRoles (this.findRoles (dto));
 

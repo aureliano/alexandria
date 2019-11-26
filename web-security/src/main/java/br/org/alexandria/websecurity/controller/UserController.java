@@ -46,7 +46,7 @@ public class UserController {
     return ResponseEntity.created (uri).body (dto);
   }
 
-  @PutMapping(path = "/api/v1/users/{id}", consumes = "application/json")
+  @PutMapping(path = "/v1/users/{id}", consumes = "application/json")
   public @ResponseBody ResponseEntity<UserDTO> rolesUpdate (
       @PathVariable Long id, @RequestBody UserDTO dto) {
     this.userService.updateUser (id, dto);
