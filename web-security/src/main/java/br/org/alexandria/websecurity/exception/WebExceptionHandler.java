@@ -1,5 +1,8 @@
 package br.org.alexandria.websecurity.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,20 +17,33 @@ import br.org.alexandria.websecurity.helper.WebHelper;
 @ControllerAdvice
 public class WebExceptionHandler extends ResponseEntityExceptionHandler {
 
+  @Autowired
+  private WebHelper webHelper;
+
+  private static final Logger logger = LoggerFactory
+      .getLogger (WebExceptionHandler.class);
+
   @ExceptionHandler(value = { DataIntegrityViolationException.class })
   protected ResponseEntity<Object> handleConflict (RuntimeException ex,
       WebRequest request) {
 
-    Throwable rootCause = WebHelper.findCause (ex);
+    Throwable rootCause = this.webHelper.findCause (ex);
+    HttpStatus status = HttpStatus.CONFLICT;
+    logger.error (ex.getMessage (), ex);
+
     return handleExceptionInternal (ex, rootCause.getMessage (),
-        new HttpHeaders (), HttpStatus.CONFLICT, request);
+        new HttpHeaders (), status, request);
   }
 
   @ExceptionHandler(value = { WebSecurityException.class })
   protected ResponseEntity<Object> handleWebSecurityException (
       WebSecurityException ex, WebRequest request) {
 
-    Throwable rootCause = WebHelper.findCause (ex);
+    Throwable rootCause = this.webHelper.findCause (ex);
+    logger.warn ("Handled exception: {}\nCause: {}\nResponse code: {}",
+        ex.getClass ().getName (), rootCause.getMessage (),
+        ex.getHttpStatus ());
+
     return handleExceptionInternal (ex, rootCause.getMessage (),
         new HttpHeaders (), ex.getHttpStatus (), request);
   }
