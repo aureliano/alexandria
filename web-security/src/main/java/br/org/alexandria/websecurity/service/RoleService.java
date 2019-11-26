@@ -70,4 +70,19 @@ public class RoleService {
 
     this.roleRepository.save (role);
   }
+
+  public RoleDTO findRoleDTO (Long id) {
+    Optional<Role> optional = this.roleRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("Role not found.", HttpStatus.NOT_FOUND);
+    }
+
+    Role role = optional.get ();
+    RoleDTO dto = new RoleDTO ();
+    dto.setId (role.getId ());
+    dto.setRole (role.getName ());
+    dto.setDescription (role.getDescription ());
+
+    return dto;
+  }
 }

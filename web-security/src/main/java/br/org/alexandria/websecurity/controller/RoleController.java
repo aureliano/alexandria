@@ -59,7 +59,13 @@ public class RoleController {
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
 
-  @DeleteMapping(path = "/roles/{id}", produces = { "application/json" })
+  @GetMapping(path = "/v1/roles/{id}", produces = { "application/json" })
+  public @ResponseBody ResponseEntity<RoleDTO> rolesId (@PathVariable Long id) {
+    final RoleDTO role = this.roleService.findRoleDTO (id);
+    return ResponseEntity.accepted ().body (role);
+  }
+
+  @DeleteMapping(path = "/v1/roles/{id}", produces = { "application/json" })
   public @ResponseBody ResponseEntity<RoleDTO> rolesDelete (
       @PathVariable Long id) {
     Optional<Role> optional = this.roleRepository.findById (id);
