@@ -52,21 +52,10 @@ public class RoleController {
     return ResponseEntity.created (uri).body (dto);
   }
 
-  @PutMapping(path = "/roles/{id}", consumes = "application/json")
+  @PutMapping(path = "/v1/roles/{id}", consumes = "application/json")
   public @ResponseBody ResponseEntity<RoleDTO> rolesUpdate (
       @PathVariable Long id, @RequestBody RoleDTO dto) {
-    Optional<Role> optional = this.roleRepository.findById (id);
-    if (!optional.isPresent ()) {
-      return ResponseEntity.notFound ().build ();
-    }
-
-    Role role = optional.get ();
-    role.setName (dto.getRole ());
-    role.setDescription (dto.getDescription ());
-
-    this.roleRepository.save (role);
-    dto.setId (role.getId ());
-
+    this.roleService.updateRole (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
 
