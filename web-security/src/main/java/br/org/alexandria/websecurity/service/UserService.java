@@ -130,6 +130,7 @@ public class UserService {
     }
 
     User user = optional.get ();
+    user.getRoles ().clear ();
     this.userRepository.delete (user);
   }
 
