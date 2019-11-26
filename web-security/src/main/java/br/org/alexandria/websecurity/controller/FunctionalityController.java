@@ -51,4 +51,13 @@ public class FunctionalityController {
     this.functionalityService.updateFunctionality (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
+
+  @GetMapping(path = "/v1/functionalities/{id}", produces = {
+      "application/json" })
+  public @ResponseBody ResponseEntity<FunctionalityDTO> rolesId (
+      @PathVariable Long id) {
+    final FunctionalityDTO role = this.functionalityService
+        .findFunctionalityDTO (id);
+    return ResponseEntity.accepted ().body (role);
+  }
 }

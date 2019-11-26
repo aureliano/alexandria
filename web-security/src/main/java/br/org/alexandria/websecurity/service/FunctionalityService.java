@@ -55,4 +55,21 @@ public class FunctionalityService {
 
     this.functionalityRepository.save (functionality);
   }
+
+  public FunctionalityDTO findFunctionalityDTO (Long id) {
+    Optional<Functionality> optional = this.functionalityRepository
+        .findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("Functionality not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Functionality functionality = optional.get ();
+    FunctionalityDTO dto = new FunctionalityDTO ();
+    dto.setId (functionality.getId ());
+    dto.setFunctionality (functionality.getName ());
+    dto.setDescription (functionality.getDescription ());
+
+    return dto;
+  }
 }
