@@ -93,6 +93,24 @@ public class UserService {
     this.userRepository.save (user);
   }
 
+  public void changePassword (Long id, UserDTO dto) {
+    if (dto.getPassword () != null
+        && !dto.getPassword ().equals (dto.getConfirmPassword ())) {
+      throw new WebSecurityException ("Password != confirmedPassword",
+          HttpStatus.BAD_REQUEST);
+    }
+
+    Optional<User> optional = this.userRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("User not found.", HttpStatus.NOT_FOUND);
+    }
+
+    User user = optional.get ();
+    user.setPassword (this.securityHelper.encodePassword (dto.getPassword ()));
+
+    this.userRepository.save (user);
+  }
+
   private List<Role> findRoles (UserDTO dto) {
     List<Long> ids = new ArrayList<> (dto.getRoles ().size ());
     dto.getRoles ().forEach (r -> ids.add (r.getId ()));

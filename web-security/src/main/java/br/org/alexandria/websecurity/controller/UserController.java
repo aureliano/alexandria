@@ -52,4 +52,11 @@ public class UserController {
     this.userService.updateUser (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
+
+  @PutMapping(path = "/v1/users/{id}/change-password", consumes = "application/json")
+  public @ResponseBody ResponseEntity<UserDTO> usersChangePassword (
+      @PathVariable Long id, @RequestBody UserDTO dto) {
+    this.userService.changePassword (id, dto);
+    return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
+  }
 }
