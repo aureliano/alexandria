@@ -59,4 +59,10 @@ public class UserController {
     this.userService.changePassword (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
+
+  @GetMapping(path = "/v1/users/{id}", produces = { "application/json" })
+  public @ResponseBody ResponseEntity<UserDTO> userId (@PathVariable Long id) {
+    final UserDTO user = this.userService.findUserDTO (id);
+    return ResponseEntity.accepted ().body (user);
+  }
 }

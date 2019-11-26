@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,15 +38,6 @@ public class UserService {
       dto.setId (u.getId ());
       dto.setName (u.getName ());
 
-      final Set<RoleDTO> roles = new HashSet<> ();
-      u.getRoles ().forEach (e -> {
-        RoleDTO r = new RoleDTO ();
-        r.setId (e.getId ());
-        r.setRole (e.getName ());
-        roles.add (r);
-      });
-
-      dto.setRoles (roles);
       users.add (dto);
     });
 
@@ -109,6 +99,28 @@ public class UserService {
     user.setPassword (this.securityHelper.encodePassword (dto.getPassword ()));
 
     this.userRepository.save (user);
+  }
+
+  public UserDTO findUserDTO (Long id) {
+    Optional<User> optional = this.userRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("User not found.", HttpStatus.NOT_FOUND);
+    }
+
+    User user = optional.get ();
+    UserDTO dto = new UserDTO ();
+    dto.setId (user.getId ());
+    dto.setName (user.getName ());
+    dto.setRoles (new HashSet<RoleDTO> ());
+
+    user.getRoles ().forEach (e -> {
+      RoleDTO r = new RoleDTO ();
+      r.setId (e.getId ());
+      r.setRole (e.getName ());
+      dto.getRoles ().add (r);
+    });
+
+    return dto;
   }
 
   private List<Role> findRoles (UserDTO dto) {
