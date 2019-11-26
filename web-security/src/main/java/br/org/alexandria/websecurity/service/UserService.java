@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import br.org.alexandria.websecurity.domain.Role;
 import br.org.alexandria.websecurity.domain.User;
+import br.org.alexandria.websecurity.dto.RoleDTO;
 import br.org.alexandria.websecurity.dto.UserDTO;
 import br.org.alexandria.websecurity.exception.WebSecurityException;
 import br.org.alexandria.websecurity.helper.SecurityHelper;
@@ -28,6 +29,9 @@ public class UserService {
   @Autowired
   private RoleRepository roleRepository;
 
+  @Autowired
+  private SecurityHelper securityHelper;
+
   public List<UserDTO> findAllUsersDTO () {
     final List<UserDTO> users = new ArrayList<> ();
     this.userRepository.findAll ().forEach (u -> {
@@ -35,8 +39,13 @@ public class UserService {
       dto.setId (u.getId ());
       dto.setName (u.getName ());
 
-      final Set<Long> roles = new HashSet<> ();
-      u.getRoles ().forEach (e -> roles.add (e.getId ()));
+      final Set<RoleDTO> roles = new HashSet<> ();
+      u.getRoles ().forEach (e -> {
+        RoleDTO r = new RoleDTO ();
+        r.setId (e.getId ());
+        r.setRole (e.getName ());
+        roles.add (r);
+      });
 
       dto.setRoles (roles);
       users.add (dto);
@@ -59,7 +68,7 @@ public class UserService {
 
     User user = new User ();
     user.setName (dto.getName ());
-    user.setPassword (SecurityHelper.encodePassword (dto.getPassword ()));
+    user.setPassword (this.securityHelper.encodePassword (dto.getPassword ()));
     user.setRoles (this.findRoles (dto));
 
     this.userRepository.save (user);
@@ -85,8 +94,10 @@ public class UserService {
   }
 
   private List<Role> findRoles (UserDTO dto) {
-    Iterable<Role> iterableRoles = this.roleRepository
-        .findAllById (dto.getRoles ());
+    List<Long> ids = new ArrayList<> (dto.getRoles ().size ());
+    dto.getRoles ().forEach (r -> ids.add (r.getId ()));
+
+    Iterable<Role> iterableRoles = this.roleRepository.findAllById (ids);
     List<Role> roles = new ArrayList<> ();
     iterableRoles.forEach (r -> roles.add (r));
 

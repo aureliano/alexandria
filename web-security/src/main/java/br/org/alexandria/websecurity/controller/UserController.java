@@ -24,6 +24,9 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private WebHelper webHelper;
+
   @GetMapping(path = "/v1/users", produces = { "application/json" })
   public @ResponseBody ResponseEntity<List<UserDTO>> users () {
     final List<UserDTO> users = this.userService.findAllUsersDTO ();
@@ -36,12 +39,14 @@ public class UserController {
       @RequestBody UserDTO dto) {
     Long id = this.userService.registerUser (dto);
     dto.setId (id);
+    dto.setPassword ("*****");
+    dto.setConfirmPassword ("*****");
 
-    URI uri = WebHelper.toURI ("/users/" + dto.getId ());
+    URI uri = this.webHelper.toURI ("/api/v1/users/" + dto.getId ());
     return ResponseEntity.created (uri).body (dto);
   }
 
-  @PutMapping(path = "/v1/users/{id}", consumes = "application/json")
+  @PutMapping(path = "/api/v1/users/{id}", consumes = "application/json")
   public @ResponseBody ResponseEntity<UserDTO> rolesUpdate (
       @PathVariable Long id, @RequestBody UserDTO dto) {
     this.userService.updateUser (id, dto);
