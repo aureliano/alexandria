@@ -56,6 +56,11 @@ public class RoleService {
   }
 
   public Long createRole (RoleDTO dto) {
+    if (CollectionUtils.isEmpty (dto.getFunctionalities ())) {
+      throw new WebSecurityException (
+          "Role must have at least one functionality.", HttpStatus.BAD_REQUEST);
+    }
+
     Role role = new Role ();
     role.setName (dto.getRole ());
     role.setDescription (dto.getDescription ());
