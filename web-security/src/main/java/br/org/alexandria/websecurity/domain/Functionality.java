@@ -2,26 +2,23 @@ package br.org.alexandria.websecurity.domain;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_roles")
-public class Role {
+@Table(name = "functionalities")
+public class Functionality {
 
   @Id
-  @SequenceGenerator(name = "user_roles_seq_gen", sequenceName = "user_roles_seq", initialValue = 1, allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_roles_seq_gen")
+  @SequenceGenerator(name = "functionalities_seq_gen", sequenceName = "functionalities_seq", initialValue = 1, allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "functionalities_seq_gen")
   private long id;
 
   @Column(name = "name", nullable = false, length = 25)
@@ -30,14 +27,8 @@ public class Role {
   @Column(name = "description", nullable = false, length = 100)
   private String description;
 
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
-  private List<User> users;
-
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(name = "roles_functionalities", joinColumns = {
-      @JoinColumn(name = "functionality_id") }, inverseJoinColumns = {
-          @JoinColumn(name = "role_id") })
-  private List<Role> functionalities;
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "functionalities")
+  private List<Role> roles;
 
   public long getId () {
     return id;
@@ -63,20 +54,12 @@ public class Role {
     this.description = description;
   }
 
-  public List<User> getUsers () {
-    return users;
+  public List<Role> getRoles () {
+    return roles;
   }
 
-  public void setUsers (List<User> users) {
-    this.users = users;
-  }
-
-  public List<Role> getFunctionalities () {
-    return functionalities;
-  }
-
-  public void setFunctionalities (List<Role> functionalities) {
-    this.functionalities = functionalities;
+  public void setRoles (List<Role> roles) {
+    this.roles = roles;
   }
 
   @Override
@@ -98,19 +81,19 @@ public class Role {
       return false;
     if (getClass () != obj.getClass ())
       return false;
-    Role other = (Role) obj;
-    if (this.description == null) {
+    Functionality other = (Functionality) obj;
+    if (description == null) {
       if (other.description != null)
         return false;
-    } else if (!this.description.equals (other.description)) {
+    } else if (!description.equals (other.description)) {
       return false;
     }
-    if (this.id != other.id)
+    if (id != other.id)
       return false;
-    if (this.name == null) {
+    if (name == null) {
       if (other.name != null)
         return false;
-    } else if (!this.name.equals (other.name)) {
+    } else if (!name.equals (other.name)) {
       return false;
     }
     return true;
