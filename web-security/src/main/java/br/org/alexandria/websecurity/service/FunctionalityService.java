@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.org.alexandria.websecurity.domain.Functionality;
 import br.org.alexandria.websecurity.dto.FunctionalityDTO;
 import br.org.alexandria.websecurity.repository.FunctionalityRepository;
 
@@ -26,5 +27,14 @@ public class FunctionalityService {
     });
 
     return functionalities;
+  }
+
+  public Long createFunctionality (FunctionalityDTO dto) {
+    Functionality functionality = new Functionality ();
+    functionality.setName (dto.getFunctionality ());
+    functionality.setDescription (dto.getDescription ());
+
+    this.functionalityRepository.save (functionality);
+    return functionality.getId ();
   }
 }
