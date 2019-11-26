@@ -8,7 +8,7 @@ public class UserDTO {
   private String name;
   private String password;
   private String confirmPassword;
-  private Set<String> roles;
+  private Set<Long> roles;
 
   public Long getId () {
     return id;
@@ -42,11 +42,11 @@ public class UserDTO {
     this.confirmPassword = confirmPassword;
   }
 
-  public Set<String> getRoles () {
+  public Set<Long> getRoles () {
     return roles;
   }
 
-  public void setRoles (Set<String> roles) {
+  public void setRoles (Set<Long> roles) {
     this.roles = roles;
   }
 }
