@@ -1,6 +1,7 @@
 package br.org.alexandria.websecurity.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +35,20 @@ public class RoleController {
   @Autowired
   private WebHelper webHelper;
 
-  @GetMapping(path = "/roles", produces = { "application/json" })
-  public @ResponseBody Iterable<Role> roles () {
-    return this.roleRepository.findAll ();
+  @GetMapping(path = "/v1/roles", produces = { "application/json" })
+  public @ResponseBody ResponseEntity<List<RoleDTO>> roles () {
+    final List<RoleDTO> roles = this.roleService.findAllRolesDTO ();
+    return ResponseEntity.accepted ().body (roles);
   }
 
-  @PostMapping(path = "/roles", consumes = "application/json", produces = {
+  @PostMapping(path = "/v1/roles", consumes = "application/json", produces = {
       "application/json" })
   public @ResponseBody ResponseEntity<RoleDTO> rolesNew (
       @RequestBody RoleDTO dto) {
-    Role role = new Role ();
-    role.setName (dto.getRole ());
-    role.setDescription (dto.getDescription ());
+    Long id = this.roleService.createRole (dto);
+    dto.setId (id);
 
-    this.roleRepository.save (role);
-    dto.setId (role.getId ());
-
-    URI uri = this.webHelper.toURI ("/roles/" + dto.getId ());
+    URI uri = this.webHelper.toURI ("/api/v1/roles/" + dto.getId ());
     return ResponseEntity.created (uri).body (dto);
   }
 
