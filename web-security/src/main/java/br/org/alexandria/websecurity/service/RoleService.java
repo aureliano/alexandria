@@ -85,4 +85,14 @@ public class RoleService {
 
     return dto;
   }
+
+  public void deleteRole (Long id) {
+    Optional<Role> optional = this.roleRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebSecurityException ("Role not found.", HttpStatus.NOT_FOUND);
+    }
+
+    Role role = optional.get ();
+    this.roleRepository.delete (role);
+  }
 }

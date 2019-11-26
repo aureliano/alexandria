@@ -2,10 +2,8 @@ package br.org.alexandria.websecurity.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,17 +15,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import br.org.alexandria.websecurity.domain.Role;
 import br.org.alexandria.websecurity.dto.RoleDTO;
 import br.org.alexandria.websecurity.helper.WebHelper;
-import br.org.alexandria.websecurity.repository.RoleRepository;
 import br.org.alexandria.websecurity.service.RoleService;
 
 @Controller
 public class RoleController {
-
-  @Autowired
-  private RoleRepository roleRepository;
 
   @Autowired
   private RoleService roleService;
@@ -68,19 +61,7 @@ public class RoleController {
   @DeleteMapping(path = "/v1/roles/{id}", produces = { "application/json" })
   public @ResponseBody ResponseEntity<RoleDTO> rolesDelete (
       @PathVariable Long id) {
-    Optional<Role> optional = this.roleRepository.findById (id);
-    if (!optional.isPresent ()) {
-      return ResponseEntity.notFound ().build ();
-    }
-
-    Role role = optional.get ();
-    if (this.roleService.countUserRoles (id) > 0) {
-      String msg = "You cannot delete a role which still has users related to it.";
-      throw new DataIntegrityViolationException (msg);
-    }
-
-    this.roleRepository.delete (role);
-
+    this.roleService.deleteRole (id);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
 }
