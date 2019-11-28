@@ -1,10 +1,14 @@
 package br.org.alexandria.webalexandria.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -19,6 +23,9 @@ public class Writer {
 
   @Column(name = "full_name", nullable = false, length = 50)
   private String fullName;
+
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "writers")
+  private List<Book> books;
 
   @Column(name = "nick_name", nullable = true, length = 25)
   private String nickName;
@@ -56,6 +63,14 @@ public class Writer {
 
   public void setNationality (String nationality) {
     this.nationality = nationality;
+  }
+
+  public List<Book> getBooks () {
+    return books;
+  }
+
+  public void setBooks (List<Book> books) {
+    this.books = books;
   }
 
   @Override
