@@ -1,4 +1,4 @@
-package br.org.alexandria.commons;
+package br.org.alexandria.commons.helper;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,7 +7,6 @@ import java.net.URI;
 import org.junit.Test;
 
 import br.org.alexandria.commons.exception.AlexandriaCommonsException;
-import br.org.alexandria.commons.helper.WebHelper;
 
 public class WebHelperTest {
 
