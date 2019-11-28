@@ -21,7 +21,7 @@ public class Functionality {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "functionalities_seq_gen")
   private long id;
 
-  @Column(name = "name", nullable = false, length = 25)
+  @Column(name = "name", nullable = false, length = 25, unique = true)
   private String name;
 
   @Column(name = "description", nullable = false, length = 100)
