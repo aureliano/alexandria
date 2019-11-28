@@ -17,7 +17,6 @@ import br.org.alexandria.websecurity.domain.User;
 import br.org.alexandria.websecurity.dto.RoleDTO;
 import br.org.alexandria.websecurity.dto.UserDTO;
 import br.org.alexandria.websecurity.exception.WebSecurityException;
-import br.org.alexandria.websecurity.helper.SecurityHelper;
 import br.org.alexandria.websecurity.repository.RoleRepository;
 import br.org.alexandria.websecurity.repository.UserRepository;
 
