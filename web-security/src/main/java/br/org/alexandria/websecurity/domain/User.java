@@ -22,7 +22,7 @@ public class User {
   @Id
   @SequenceGenerator(name = "users_seq_gen", sequenceName = "users_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq_gen")
-  private long id;
+  private Long id;
 
   @Column(name = "name", nullable = false, length = 25)
   private String name;
@@ -36,11 +36,11 @@ public class User {
           @JoinColumn(name = "role_id") })
   private List<Role> roles;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 

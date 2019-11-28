@@ -19,7 +19,7 @@ public class Functionality {
   @Id
   @SequenceGenerator(name = "functionalities_seq_gen", sequenceName = "functionalities_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "functionalities_seq_gen")
-  private long id;
+  private Long id;
 
   @Column(name = "name", nullable = false, length = 25, unique = true)
   private String name;
@@ -30,11 +30,11 @@ public class Functionality {
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "functionalities")
   private List<Role> roles;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 
