@@ -18,7 +18,7 @@ public class Image {
   @Id
   @SequenceGenerator(name = "images_seq_gen", sequenceName = "images_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "images_seq_gen")
-  private long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "book_id", nullable = false)
@@ -27,11 +27,11 @@ public class Image {
   @Column(name = "file_path", nullable = false, length = 300)
   private String filePath;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 

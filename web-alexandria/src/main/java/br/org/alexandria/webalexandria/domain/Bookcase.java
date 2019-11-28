@@ -18,7 +18,7 @@ public class Bookcase {
   @Id
   @SequenceGenerator(name = "bookcase_seq_gen", sequenceName = "bookcase_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bookcase_seq_gen")
-  private long id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "book_id", nullable = false)
@@ -33,11 +33,11 @@ public class Bookcase {
   @Column(name = "gender", nullable = true, length = 25)
   private String gender;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 

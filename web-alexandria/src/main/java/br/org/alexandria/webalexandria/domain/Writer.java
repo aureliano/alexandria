@@ -19,7 +19,7 @@ public class Writer {
   @Id
   @SequenceGenerator(name = "writers_seq_gen", sequenceName = "writers_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "writers_seq_gen")
-  private long id;
+  private Long id;
 
   @Column(name = "full_name", nullable = false, length = 50)
   private String fullName;
@@ -33,11 +33,11 @@ public class Writer {
   @Column(name = "nationality", nullable = true, length = 50)
   private String nationality;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 

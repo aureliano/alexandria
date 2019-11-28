@@ -23,7 +23,7 @@ public class Book {
   @Id
   @SequenceGenerator(name = "books_seq_gen", sequenceName = "books_seq", initialValue = 1, allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "books_seq_gen")
-  private long id;
+  private Long id;
 
   @Column(name = "title", nullable = false, length = 100)
   private String title;
@@ -65,11 +65,11 @@ public class Book {
   @JoinColumn(name = "book_id")
   private List<Image> images;
 
-  public long getId () {
+  public Long getId () {
     return id;
   }
 
-  public void setId (long id) {
+  public void setId (Long id) {
     this.id = id;
   }
 
