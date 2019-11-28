@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import br.org.alexandria.commons.security.PasswordDigest;
 import br.org.alexandria.websecurity.domain.Role;
 import br.org.alexandria.websecurity.domain.User;
 import br.org.alexandria.websecurity.dto.RoleDTO;
@@ -29,7 +31,16 @@ public class UserService {
   private RoleRepository roleRepository;
 
   @Autowired
-  private SecurityHelper securityHelper;
+  private PasswordDigest securityHelper;
+
+  @Value("${web-security.algorithm}")
+  private String algorithm;
+
+  @Value("${web-security.salt}")
+  private String salt;
+
+  @Value("${web-security.rounds}")
+  private Integer rounds;
 
   public List<UserDTO> findAllUsersDTO () {
     final List<UserDTO> users = new ArrayList<> ();
@@ -58,7 +69,8 @@ public class UserService {
 
     User user = new User ();
     user.setName (dto.getName ());
-    user.setPassword (this.securityHelper.encodePassword (dto.getPassword ()));
+    user.setPassword (this.securityHelper.encodePassword (this.algorithm,
+        dto.getPassword (), this.salt, this.rounds));
     user.setRoles (this.findRoles (dto));
 
     this.userRepository.save (user);
@@ -96,7 +108,8 @@ public class UserService {
     }
 
     User user = optional.get ();
-    user.setPassword (this.securityHelper.encodePassword (dto.getPassword ()));
+    user.setPassword (this.securityHelper.encodePassword (this.algorithm,
+        dto.getPassword (), this.salt, this.rounds));
 
     this.userRepository.save (user);
   }

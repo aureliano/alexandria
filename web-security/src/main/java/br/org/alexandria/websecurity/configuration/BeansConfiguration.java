@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import br.org.alexandria.commons.helper.ExceptionHelper;
 import br.org.alexandria.commons.helper.WebHelper;
+import br.org.alexandria.commons.security.PasswordDigest;
 
 @Configuration
 public class BeansConfiguration {
@@ -17,5 +18,10 @@ public class BeansConfiguration {
   @Bean
   public ExceptionHelper getExceptionHelper () {
     return new ExceptionHelper ();
+  }
+
+  @Bean
+  public PasswordDigest getPasswordDigest () {
+    return new PasswordDigest ();
   }
 }
