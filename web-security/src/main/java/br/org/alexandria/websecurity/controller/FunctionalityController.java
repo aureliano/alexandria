@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.org.alexandria.commons.helper.WebHelper;
 import br.org.alexandria.websecurity.dto.FunctionalityDTO;
-import br.org.alexandria.websecurity.helper.WebHelper;
 import br.org.alexandria.websecurity.service.FunctionalityService;
 
 @Controller
