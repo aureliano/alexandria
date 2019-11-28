@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -59,6 +60,10 @@ public class Book {
       @JoinColumn(name = "book_id") }, inverseJoinColumns = {
           @JoinColumn(name = "writer_id") })
   private List<Writer> writers;
+
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
+  @JoinColumn(name = "book_id")
+  private List<Image> images;
 
   public long getId () {
     return id;
