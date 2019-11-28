@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.org.alexandria.websecurity.helper.WebHelper;
+import br.org.alexandria.commons.helper.ExceptionHelper;
 
 @ControllerAdvice
 public class WebExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Autowired
-  private WebHelper webHelper;
+  private ExceptionHelper exceptionHelper;
 
   private static final Logger logger = LoggerFactory
       .getLogger (WebExceptionHandler.class);
@@ -27,7 +27,7 @@ public class WebExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleConflict (RuntimeException ex,
       WebRequest request) {
 
-    Throwable rootCause = this.webHelper.findCause (ex);
+    Throwable rootCause = this.exceptionHelper.findCause (ex);
     HttpStatus status = HttpStatus.CONFLICT;
     logger.error (ex.getMessage (), ex);
 
@@ -39,7 +39,7 @@ public class WebExceptionHandler extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleWebSecurityException (
       WebSecurityException ex, WebRequest request) {
 
-    Throwable rootCause = this.webHelper.findCause (ex);
+    Throwable rootCause = this.exceptionHelper.findCause (ex);
     logger.warn ("Handled exception: {}\nCause: {}\nResponse code: {}",
         ex.getClass ().getName (), rootCause.getMessage (),
         ex.getHttpStatus ());
