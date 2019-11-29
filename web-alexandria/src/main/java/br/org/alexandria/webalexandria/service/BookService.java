@@ -3,6 +3,7 @@ package br.org.alexandria.webalexandria.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -88,6 +89,35 @@ public class BookService {
 
     this.bookRepository.save (book);
     return book.getId ();
+  }
+
+  public void updateBook (Long id, BookDTO dto) {
+    Optional<Book> optional = this.bookRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Book not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    if (CollectionUtils.isEmpty (dto.getWriters ())) {
+      throw new WebAlexandriaException ("Book must have at least one writer.",
+          HttpStatus.BAD_REQUEST);
+    }
+
+    Book book = optional.get ();
+    book.setTitle (dto.getTitle ());
+    book.setSynopsis (dto.getSynopsis ());
+    book.setPublishingCompany (dto.getPublishingCompany ());
+    book.setEdition (dto.getEdition ());
+    book.setYear (dto.getYear ());
+    book.setLanguage (dto.getLanguage ());
+    book.setPages (dto.getPages ());
+    book.setHeight (dto.getHeight ());
+    book.setWidth (dto.getWidth ());
+    book.setWeight (dto.getWeight ());
+    book.setWriters (this.findWriters (dto));
+    book.setImages (this.buildImages (dto.getImages ()));
+
+    this.bookRepository.save (book);
   }
 
   private List<Image> buildImages (List<ImageDTO> images) {
