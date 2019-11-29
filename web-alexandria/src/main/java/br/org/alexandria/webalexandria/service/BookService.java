@@ -1,10 +1,16 @@
 package br.org.alexandria.webalexandria.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +34,9 @@ import br.org.alexandria.webalexandria.repository.WriterRepository;
 
 @Service
 public class BookService {
+
+  private static final Logger logger = LoggerFactory
+      .getLogger (BookService.class);
 
   @Autowired
   private BookRepository bookRepository;
@@ -160,6 +169,21 @@ public class BookService {
     return dto;
   }
 
+  public void deleteBook (Long id) {
+    Optional<Book> optional = this.bookRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Book not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Book book = optional.get ();
+    this.deleteFilesFromStorage (book);
+    book.getWriters ().clear ();
+    book.getImages ().clear ();
+
+    this.bookRepository.delete (book);
+  }
+
   private List<Image> buildImages (List<ImageDTO> images) {
     if (CollectionUtils.isEmpty (images)) {
       return Collections.emptyList ();
@@ -190,5 +214,16 @@ public class BookService {
     }
 
     return writers;
+  }
+
+  private void deleteFilesFromStorage (Book book) {
+    book.getImages ().forEach (i -> {
+      Path path = Paths.get (i.getFilePath ());
+      try {
+        Files.delete (path);
+      } catch (IOException e) {
+        logger.error (e.getMessage (), e);
+      }
+    });
   }
 }
