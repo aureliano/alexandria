@@ -62,7 +62,6 @@ public class Book {
   private List<Writer> writers;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
-  @JoinColumn(name = "book_id")
   private List<Image> images;
 
   public Long getId () {
