@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import br.org.alexandria.commons.exception.AlexandriaCommonsException;
+import br.org.alexandria.commons.helper.WebHelper;
 import br.org.alexandria.webalexandria.domain.Book;
 import br.org.alexandria.webalexandria.domain.Image;
 import br.org.alexandria.webalexandria.domain.Writer;
@@ -25,25 +27,27 @@ import br.org.alexandria.webalexandria.repository.WriterRepository;
 @Service
 public class BookService {
 
-  private static final Integer MAX_PAGE_SIZE = 20;
-
   @Autowired
   private BookRepository bookRepository;
 
   @Autowired
   private WriterRepository writerRepository;
 
+  @Autowired
+  private WebHelper webHelper;
+
   public PageDTO<BookDTO> findAllBooksDTO (int pageNum, int pagesize) {
-    if (pagesize > MAX_PAGE_SIZE) {
-      String msg = String.format ("Page size must be at most %d.",
-          MAX_PAGE_SIZE);
-      throw new WebAlexandriaException (msg, HttpStatus.BAD_REQUEST);
+    try {
+      this.webHelper.validatePageRequest (pageNum, pagesize);
+    } catch (AlexandriaCommonsException e) {
+      throw new WebAlexandriaException (e.getMessage (),
+          HttpStatus.BAD_REQUEST);
     }
 
-    Pageable pageable = PageRequest.of (pageNum, pagesize);
+    Pageable pageable = PageRequest.of (--pageNum, pagesize);
     Page<Book> page = this.bookRepository.findAll (pageable);
 
-    final List<BookDTO> books = new ArrayList<> (page.getNumberOfElements ());
+    final List<BookDTO> books = new ArrayList<> ();
     page.getContent ().forEach (b -> {
       BookDTO dto = new BookDTO ();
       dto.setId (b.getId ());
@@ -54,7 +58,7 @@ public class BookService {
 
     PageDTO<BookDTO> pageDTO = new PageDTO<> ();
     pageDTO.setData (books);
-    pageDTO.setPageNumber (page.getNumber ());
+    pageDTO.setPageNumber (page.getNumber () + 1);
     pageDTO.setPageSize (page.getSize ());
     pageDTO.setTotalElements (page.getTotalElements ());
     pageDTO.setTotalPages (page.getTotalPages ());
