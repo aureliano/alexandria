@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.org.alexandria.webalexandria.domain.Writer;
 import br.org.alexandria.webalexandria.dto.WriterDTO;
 import br.org.alexandria.webalexandria.repository.WriterRepository;
 
@@ -26,5 +27,15 @@ public class WriterService {
     });
 
     return writers;
+  }
+
+  public Long createRole (WriterDTO dto) {
+    Writer writer = new Writer ();
+    writer.setFullName (dto.getFullName ());
+    writer.setNickName (dto.getNickName ());
+    writer.setNationality (dto.getNationality ());
+
+    this.writerRepository.save (writer);
+    return writer.getId ();
   }
 }
