@@ -160,6 +160,14 @@ public class Book {
     this.writers = writers;
   }
 
+  public List<Image> getImages () {
+    return images;
+  }
+
+  public void setImages (List<Image> images) {
+    this.images = images;
+  }
+
   @Override
   public int hashCode () {
     final int prime = 31;
