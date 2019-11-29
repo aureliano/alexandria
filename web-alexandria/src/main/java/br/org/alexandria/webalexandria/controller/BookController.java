@@ -54,4 +54,10 @@ public class BookController {
     this.bookService.updateBook (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
+
+  @GetMapping(path = "/api/v1/books/{id}", produces = { "application/json" })
+  public @ResponseBody ResponseEntity<BookDTO> booksId (@PathVariable Long id) {
+    final BookDTO book = this.bookService.findBookDTO (id);
+    return ResponseEntity.accepted ().body (book);
+  }
 }
