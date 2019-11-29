@@ -1,9 +1,13 @@
 package br.org.alexandria.webalexandria.controller;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,10 +27,21 @@ public class BookController {
 
   @GetMapping(path = "/api/v1/books", params = { "page", "size" }, produces = {
       "application/json" })
-  public @ResponseBody ResponseEntity<PageDTO<BookDTO>> users (
+  public @ResponseBody ResponseEntity<PageDTO<BookDTO>> books (
       @RequestParam int page, @RequestParam int size) {
     final PageDTO<BookDTO> books = this.bookService.findAllBooksDTO (page,
         size);
     return ResponseEntity.accepted ().body (books);
+  }
+
+  @PostMapping(path = "/api/v1/books", consumes = "application/json", produces = {
+      "application/json" })
+  public @ResponseBody ResponseEntity<BookDTO> booksNew (
+      @RequestBody BookDTO dto) {
+    Long id = this.bookService.createBook (dto);
+    dto.setId (id);
+
+    URI uri = this.webHelper.toURI ("/api/v1/books/" + dto.getId ());
+    return ResponseEntity.created (uri).body (dto);
   }
 }
