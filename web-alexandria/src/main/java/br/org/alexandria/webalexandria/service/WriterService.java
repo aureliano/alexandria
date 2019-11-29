@@ -56,4 +56,21 @@ public class WriterService {
 
     this.writerRepository.save (writer);
   }
+
+  public WriterDTO findWriterDTO (Long id) {
+    Optional<Writer> optional = this.writerRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Writer not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Writer writer = optional.get ();
+    WriterDTO dto = new WriterDTO ();
+    dto.setId (writer.getId ());
+    dto.setFullName (writer.getFullName ());
+    dto.setNickName (writer.getNickName ());
+    dto.setNationality (writer.getNationality ());
+
+    return dto;
+  }
 }

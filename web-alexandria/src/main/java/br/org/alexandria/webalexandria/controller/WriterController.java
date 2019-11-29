@@ -50,4 +50,11 @@ public class WriterController {
     this.writerService.updateWriter (id, dto);
     return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
+
+  @GetMapping(path = "/api/v1/writers/{id}", produces = { "application/json" })
+  public @ResponseBody ResponseEntity<WriterDTO> rolesId (
+      @PathVariable Long id) {
+    final WriterDTO writer = this.writerService.findWriterDTO (id);
+    return ResponseEntity.accepted ().body (writer);
+  }
 }
