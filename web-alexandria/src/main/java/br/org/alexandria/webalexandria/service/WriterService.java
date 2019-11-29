@@ -73,4 +73,15 @@ public class WriterService {
 
     return dto;
   }
+
+  public void deleteWriter (Long id) {
+    Optional<Writer> optional = this.writerRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Writer not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Writer writer = optional.get ();
+    this.writerRepository.delete (writer);
+  }
 }
