@@ -8,7 +8,7 @@ CREATE TABLE writers(
 CREATE TABLE books(
   id BIGINT NOT NULL PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
-  synopsis VARCHAR(500),
+  synopsis VARCHAR(1500),
   publishing_company VARCHAR(50),
   edition SMALLINT,
   year SMALLINT,
