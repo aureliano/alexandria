@@ -31,30 +31,6 @@ public class Book {
   @Column(name = "synopsis", nullable = true, length = 500)
   private String synopsis;
 
-  @Column(name = "publishing_company", nullable = true, length = 50)
-  private String publishingCompany;
-
-  @Column(name = "edition", nullable = true)
-  private Integer edition;
-
-  @Column(name = "year", nullable = true)
-  private Integer year;
-
-  @Column(name = "language", nullable = false, length = 20)
-  private String language;
-
-  @Column(name = "pages", nullable = true)
-  private Integer pages;
-
-  @Column(name = "height", nullable = true)
-  private Double height;
-
-  @Column(name = "width", nullable = true)
-  private Double width;
-
-  @Column(name = "weight", nullable = true)
-  private Double weight;
-
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinTable(name = "writers_books", joinColumns = {
       @JoinColumn(name = "book_id") }, inverseJoinColumns = {
@@ -62,7 +38,7 @@ public class Book {
   private List<Writer> writers;
 
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
-  private List<Image> images;
+  private List<Edition> editions;
 
   public Long getId () {
     return id;
@@ -88,70 +64,6 @@ public class Book {
     this.synopsis = synopsis;
   }
 
-  public String getPublishingCompany () {
-    return publishingCompany;
-  }
-
-  public void setPublishingCompany (String publishingCompany) {
-    this.publishingCompany = publishingCompany;
-  }
-
-  public Integer getEdition () {
-    return edition;
-  }
-
-  public void setEdition (Integer edition) {
-    this.edition = edition;
-  }
-
-  public Integer getYear () {
-    return year;
-  }
-
-  public void setYear (Integer year) {
-    this.year = year;
-  }
-
-  public String getLanguage () {
-    return language;
-  }
-
-  public void setLanguage (String language) {
-    this.language = language;
-  }
-
-  public Integer getPages () {
-    return pages;
-  }
-
-  public void setPages (Integer pages) {
-    this.pages = pages;
-  }
-
-  public Double getHeight () {
-    return height;
-  }
-
-  public void setHeight (Double height) {
-    this.height = height;
-  }
-
-  public Double getWidth () {
-    return width;
-  }
-
-  public void setWidth (Double width) {
-    this.width = width;
-  }
-
-  public Double getWeight () {
-    return weight;
-  }
-
-  public void setWeight (Double weight) {
-    this.weight = weight;
-  }
-
   public List<Writer> getWriters () {
     return writers;
   }
@@ -160,19 +72,19 @@ public class Book {
     this.writers = writers;
   }
 
-  public List<Image> getImages () {
-    return images;
+  public List<Edition> getEditions () {
+    return editions;
   }
 
-  public void setImages (List<Image> images) {
-    this.images = images;
+  public void setEditions (List<Edition> editions) {
+    this.editions = editions;
   }
 
   @Override
   public int hashCode () {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((language == null) ? 0 : language.hashCode ());
+    result = prime * result + ((synopsis == null) ? 0 : synopsis.hashCode ());
     result = prime * result + ((title == null) ? 0 : title.hashCode ());
     return result;
   }
@@ -186,10 +98,10 @@ public class Book {
     if (getClass () != obj.getClass ())
       return false;
     Book other = (Book) obj;
-    if (language == null) {
-      if (other.language != null)
+    if (synopsis == null) {
+      if (other.synopsis != null)
         return false;
-    } else if (!language.equals (other.language)) {
+    } else if (!synopsis.equals (other.synopsis)) {
       return false;
     }
     if (title == null) {

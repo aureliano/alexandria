@@ -1,11 +1,6 @@
 package br.org.alexandria.webalexandria.service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +17,8 @@ import org.springframework.util.CollectionUtils;
 import br.org.alexandria.commons.exception.AlexandriaCommonsException;
 import br.org.alexandria.commons.helper.WebHelper;
 import br.org.alexandria.webalexandria.domain.Book;
-import br.org.alexandria.webalexandria.domain.Image;
 import br.org.alexandria.webalexandria.domain.Writer;
 import br.org.alexandria.webalexandria.dto.BookDTO;
-import br.org.alexandria.webalexandria.dto.ImageDTO;
 import br.org.alexandria.webalexandria.dto.PageDTO;
 import br.org.alexandria.webalexandria.dto.WriterDTO;
 import br.org.alexandria.webalexandria.exception.WebAlexandriaException;
@@ -86,18 +79,10 @@ public class BookService {
     Book book = new Book ();
     book.setTitle (dto.getTitle ());
     book.setSynopsis (dto.getSynopsis ());
-    book.setPublishingCompany (dto.getPublishingCompany ());
-    book.setEdition (dto.getEdition ());
-    book.setYear (dto.getYear ());
-    book.setLanguage (dto.getLanguage ());
-    book.setPages (dto.getPages ());
-    book.setHeight (dto.getHeight ());
-    book.setWidth (dto.getWidth ());
-    book.setWeight (dto.getWeight ());
     book.setWriters (this.findWriters (dto));
-    book.setImages (this.buildImages (dto.getImages ()));
 
     this.bookRepository.save (book);
+    logger.info ("Book {} created.", book.getId ());
     return book.getId ();
   }
 
@@ -116,18 +101,10 @@ public class BookService {
     Book book = optional.get ();
     book.setTitle (dto.getTitle ());
     book.setSynopsis (dto.getSynopsis ());
-    book.setPublishingCompany (dto.getPublishingCompany ());
-    book.setEdition (dto.getEdition ());
-    book.setYear (dto.getYear ());
-    book.setLanguage (dto.getLanguage ());
-    book.setPages (dto.getPages ());
-    book.setHeight (dto.getHeight ());
-    book.setWidth (dto.getWidth ());
-    book.setWeight (dto.getWeight ());
     book.setWriters (this.findWriters (dto));
-    book.setImages (this.buildImages (dto.getImages ()));
 
     this.bookRepository.save (book);
+    logger.info ("Book {} updated.", book.getId ());
   }
 
   public BookDTO findBookDTO (Long id) {
@@ -142,28 +119,13 @@ public class BookService {
     dto.setId (book.getId ());
     dto.setTitle (book.getTitle ());
     dto.setSynopsis (book.getSynopsis ());
-    dto.setPublishingCompany (book.getPublishingCompany ());
-    dto.setEdition (book.getEdition ());
-    dto.setYear (book.getYear ());
-    dto.setLanguage (book.getLanguage ());
-    dto.setPages (book.getPages ());
-    dto.setHeight (book.getHeight ());
-    dto.setWidth (book.getWidth ());
-    dto.setWeight (book.getWeight ());
     dto.setWriters (new ArrayList<> ());
-    dto.setImages (new ArrayList<> ());
 
     book.getWriters ().forEach (e -> {
       WriterDTO w = new WriterDTO ();
       w.setId (e.getId ());
       w.setFullName (e.getFullName ());
       dto.getWriters ().add (w);
-    });
-
-    book.getImages ().forEach (e -> {
-      ImageDTO i = new ImageDTO ();
-      i.setId (e.getId ());
-      dto.getImages ().add (i);
     });
 
     return dto;
@@ -177,27 +139,11 @@ public class BookService {
     }
 
     Book book = optional.get ();
-    this.deleteFilesFromStorage (book);
+    book.getEditions ().clear ();
     book.getWriters ().clear ();
-    book.getImages ().clear ();
 
     this.bookRepository.delete (book);
-  }
-
-  private List<Image> buildImages (List<ImageDTO> images) {
-    if (CollectionUtils.isEmpty (images)) {
-      return Collections.emptyList ();
-    }
-
-    List<Image> source = new ArrayList<> (images.size ());
-    images.forEach (i -> {
-      Image e = new Image ();
-      e.setFilePath (i.getFilePath ());
-
-      source.add (e);
-    });
-
-    return source;
+    logger.info ("Book {} deleted.", book.getId ());
   }
 
   private List<Writer> findWriters (BookDTO dto) {
@@ -214,16 +160,5 @@ public class BookService {
     }
 
     return writers;
-  }
-
-  private void deleteFilesFromStorage (Book book) {
-    book.getImages ().forEach (i -> {
-      Path path = Paths.get (i.getFilePath ());
-      try {
-        Files.delete (path);
-      } catch (IOException e) {
-        logger.error (e.getMessage (), e);
-      }
-    });
   }
 }

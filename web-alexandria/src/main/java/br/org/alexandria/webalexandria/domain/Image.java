@@ -21,8 +21,11 @@ public class Image {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "book_id", nullable = false)
-  private Book book;
+  @JoinColumn(name = "edition_id", nullable = false)
+  private Edition edition;
+
+  @Column(name = "temporary", nullable = false)
+  private Boolean temporary;
 
   @Column(name = "file_path", nullable = false, length = 300)
   private String filePath;
@@ -35,12 +38,20 @@ public class Image {
     this.id = id;
   }
 
-  public Book getBook () {
-    return book;
+  public Edition getEdition () {
+    return edition;
   }
 
-  public void setBook (Book book) {
-    this.book = book;
+  public void setEdition (Edition edition) {
+    this.edition = edition;
+  }
+
+  public Boolean getTemporary () {
+    return temporary;
+  }
+
+  public void setTemporary (Boolean temporary) {
+    this.temporary = temporary;
   }
 
   public String getFilePath () {

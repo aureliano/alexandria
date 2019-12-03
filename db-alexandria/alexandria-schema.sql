@@ -22,7 +22,7 @@ CREATE TABLE editions(
   id BIGINT NOT NULL PRIMARY KEY,
   book_id BIGINT NOT NULL,
   publishing_company VARCHAR(50),
-  edition SMALLINT,
+  edition SMALLINT NOT NULL,
   year SMALLINT,
   language VARCHAR(20) NOT NULL,
   pages SMALLINT,

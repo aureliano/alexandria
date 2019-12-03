@@ -21,8 +21,8 @@ public class Bookcase {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "book_id", nullable = false)
-  private Book book;
+  @JoinColumn(name = "edition_id", nullable = false)
+  private Edition edition;
 
   @Column(name = "comments", nullable = true, length = 300)
   private String comments;
@@ -41,12 +41,12 @@ public class Bookcase {
     this.id = id;
   }
 
-  public Book getBook () {
-    return book;
+  public Edition getEdition () {
+    return edition;
   }
 
-  public void setBook (Book book) {
-    this.book = book;
+  public void setEdition (Edition edition) {
+    this.edition = edition;
   }
 
   public String getComments () {
@@ -77,7 +77,7 @@ public class Bookcase {
   public int hashCode () {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((book == null) ? 0 : book.hashCode ());
+    result = prime * result + ((edition == null) ? 0 : edition.hashCode ());
     result = prime * result + ((read == null) ? 0 : read.hashCode ());
     return result;
   }
@@ -91,10 +91,10 @@ public class Bookcase {
     if (getClass () != obj.getClass ())
       return false;
     Bookcase other = (Bookcase) obj;
-    if (book == null) {
-      if (other.book != null)
+    if (edition == null) {
+      if (other.edition != null)
         return false;
-    } else if (!book.equals (other.book)) {
+    } else if (!edition.equals (other.edition)) {
       return false;
     }
     if (read == null) {
