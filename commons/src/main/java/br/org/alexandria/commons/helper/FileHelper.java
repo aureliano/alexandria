@@ -14,7 +14,7 @@ public class FileHelper {
 
   private MessageDigest messageDigest;
 
-  public Path resolveImageSubDirectory (String seed) {
+  public Path resolveFileSubDirectory (String seed) {
     if (seed == null) {
       throw new AlexandriaCommonsException ("Seed is required.");
     }

@@ -16,13 +16,13 @@ public class FileHelperTest {
 
   @Test(expected = AlexandriaCommonsException.class)
   public void testResolveImageSubDirectorySeedIsNull () {
-    this.helper.resolveImageSubDirectory (null);
+    this.helper.resolveFileSubDirectory (null);
   }
 
   @Test
   public void testResolveImageSubDirectory () {
     String expected = "C4/CA";
-    String actual = this.helper.resolveImageSubDirectory ("1").toString ();
+    String actual = this.helper.resolveFileSubDirectory ("1").toString ();
 
     assertEquals (expected, actual);
   }
