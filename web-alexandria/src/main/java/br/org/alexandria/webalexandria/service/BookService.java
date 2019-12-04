@@ -164,6 +164,7 @@ public class BookService {
         e.getImages ().forEach (i -> {
           ImageDTO img = new ImageDTO ();
           img.setId (i.getId ());
+          images.add (img);
         });
       }
       d.setImages (images);
