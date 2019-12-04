@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.org.alexandria.commons.helper.FileHelper;
@@ -73,7 +71,6 @@ public class EditionService {
     edition.setWidth (dto.getWidth ());
     edition.setWeight (dto.getWeight ());
     edition.setBook (optional.get ());
-    edition.setImages (this.buildImages (dto.getImages ()));
 
     this.editionRepository.save (edition);
     logger.info ("Edition {} created.", edition.getId ());
@@ -103,7 +100,6 @@ public class EditionService {
     edition.setWidth (dto.getWidth ());
     edition.setWeight (dto.getWeight ());
     edition.setBook (option.get ());
-    edition.setImages (this.buildImages (dto.getImages ()));
 
     this.editionRepository.save (edition);
     logger.info ("Edition {} updated.", id);
@@ -206,22 +202,22 @@ public class EditionService {
     return imagesDTO;
   }
 
-  private List<Image> buildImages (List<ImageDTO> images) {
-    if (CollectionUtils.isEmpty (images)) {
-      return Collections.emptyList ();
+  public void deleteFile (Long editionId, Long imageId) {
+    if (!this.editionRepository.existsById (editionId)) {
+      throw new WebAlexandriaException ("Edition not found.",
+          HttpStatus.NOT_FOUND);
     }
 
-    List<Long> ids = new ArrayList<> (images.size ());
-    images.forEach (i -> {
-      ids.add (i.getId ());
-    });
+    Optional<Image> imageOptional = this.imageRepository.findById (imageId);
+    if (!imageOptional.isPresent ()) {
+      throw new WebAlexandriaException ("Image not found.",
+          HttpStatus.NOT_FOUND);
+    }
 
-    Iterable<Image> iterable = this.imageRepository.findAllById (ids);
-    List<Image> entities = new ArrayList<> (images.size ());
-    iterable.forEach (i -> {
-      entities.add (i);
-    });
+    Image image = imageOptional.get ();
+    image.setEdition (null);
+    image.setTemporary (true);
 
-    return entities;
+    this.imageRepository.save (image);
   }
 }

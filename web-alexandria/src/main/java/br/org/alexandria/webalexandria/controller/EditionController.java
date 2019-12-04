@@ -59,10 +59,16 @@ public class EditionController {
   @PostMapping("/api/v1/editions/{id}/upload-file")
   public @ResponseBody ResponseEntity<List<ImageDTO>> uploadFiles (
       @PathVariable Long id, @RequestParam("files") MultipartFile[] files) {
-
     List<ImageDTO> images = this.editionService.uploadImages (id, files);
     URI uri = this.webHelper.toURI ("/api/v1/editions/" + id);
 
     return ResponseEntity.created (uri).body (images);
+  }
+
+  @DeleteMapping("/api/v1/editions/{editionId}/remove-file/{imageId}")
+  public @ResponseBody ResponseEntity<ImageDTO> deleteFile (
+      @PathVariable Long editionId, @PathVariable Long imageId) {
+    this.editionService.deleteFile (editionId, imageId);
+    return ResponseEntity.status (HttpStatus.NO_CONTENT).build ();
   }
 }
