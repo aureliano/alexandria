@@ -27,8 +27,8 @@ public class Image {
   @Column(name = "temporary", nullable = false)
   private Boolean temporary;
 
-  @Column(name = "file_path", nullable = false, length = 300)
-  private String filePath;
+  @Column(name = "content_type", nullable = false, length = 30)
+  private String contentType;
 
   public Long getId () {
     return id;
@@ -54,19 +54,19 @@ public class Image {
     this.temporary = temporary;
   }
 
-  public String getFilePath () {
-    return filePath;
+  public String getContentType () {
+    return contentType;
   }
 
-  public void setFilePath (String filePath) {
-    this.filePath = filePath;
+  public void setContentType (String contentType) {
+    this.contentType = contentType;
   }
 
   @Override
   public int hashCode () {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((filePath == null) ? 0 : filePath.hashCode ());
+    result = prime * result + ((id == null) ? 0 : id.hashCode ());
     return result;
   }
 
@@ -79,10 +79,10 @@ public class Image {
     if (getClass () != obj.getClass ())
       return false;
     Image other = (Image) obj;
-    if (filePath == null) {
-      if (other.filePath != null)
+    if (id == null) {
+      if (other.id != null)
         return false;
-    } else if (!filePath.equals (other.filePath)) {
+    } else if (!id.equals (other.id)) {
       return false;
     }
     return true;

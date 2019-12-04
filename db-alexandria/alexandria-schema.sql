@@ -34,8 +34,8 @@ CREATE TABLE editions(
 
 CREATE TABLE images(
   id BIGINT NOT NULL PRIMARY KEY,
-  edition_id BIGINT NOT NULL,
-  file_path VARCHAR(300) NOT NULL,
+  edition_id BIGINT,
+  content_type VARCHAR(30),
   temporary BOOLEAN NOT NULL,
   CONSTRAINT images_editions_fk FOREIGN KEY(edition_id) REFERENCES editions(id)
 );

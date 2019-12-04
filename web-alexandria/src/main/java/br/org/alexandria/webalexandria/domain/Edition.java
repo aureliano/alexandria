@@ -52,7 +52,7 @@ public class Edition {
   @JoinColumn(name = "book_id", nullable = false)
   private Book book;
 
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "edition")
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "edition")
   private List<Image> images;
 
   public Long getId () {

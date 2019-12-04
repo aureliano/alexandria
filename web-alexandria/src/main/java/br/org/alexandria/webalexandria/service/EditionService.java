@@ -1,7 +1,7 @@
 package br.org.alexandria.webalexandria.service;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,13 +9,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import br.org.alexandria.commons.helper.FileHelper;
 import br.org.alexandria.webalexandria.domain.Book;
 import br.org.alexandria.webalexandria.domain.Edition;
 import br.org.alexandria.webalexandria.domain.Image;
@@ -40,6 +44,12 @@ public class EditionService {
 
   @Autowired
   private ImageRepository imageRepository;
+
+  @Autowired
+  private FileHelper fileHelper;
+
+  @Value("${web-alexandria.storage.images}")
+  private String storageImagesPath;
 
   public Long createEdition (EditionDTO dto) {
     if (dto.getBookId () == null) {
@@ -107,11 +117,93 @@ public class EditionService {
     }
 
     Edition edition = optional.get ();
-    this.deleteFilesFromStorage (edition);
+    edition.getImages ().forEach (i -> {
+      i.setEdition (null);
+      i.setTemporary (true);
+    });
+    this.imageRepository.saveAll (edition.getImages ());
     edition.getImages ().clear ();
 
     this.editionRepository.delete (edition);
     logger.info ("Deleted {} edition.", id);
+  }
+
+  public List<ImageDTO> uploadImages (Long editionId, MultipartFile[] files) {
+    if ((files == null) || (files.length < 1)) {
+      throw new WebAlexandriaException ("No file uploaded.",
+          HttpStatus.BAD_REQUEST);
+    }
+
+    Optional<Edition> optional = this.editionRepository.findById (editionId);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Edition not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Edition edition = optional.get ();
+    List<Image> images = this.saveTemporaryImages (files);
+    int index = 0;
+
+    for (Image image : images) {
+      Path path = this.resolveImagePath (image.getId ());
+      MultipartFile file = files[index++];
+
+      try {
+        IOUtils.copy (file.getInputStream (),
+            new FileOutputStream (path.toFile ()));
+      } catch (IOException e) {
+        throw new WebAlexandriaException (e);
+      }
+
+      image.setContentType (file.getContentType ());
+      image.setEdition (edition);
+      image.setTemporary (false);
+    }
+
+    this.imageRepository.saveAll (images);
+
+    return this.imageToImageDTO (images);
+  }
+
+  private List<Image> saveTemporaryImages (MultipartFile[] files) {
+    List<Image> images = new ArrayList<> (files.length);
+
+    for (int i = 0; i < files.length; i++) {
+      Image image = new Image ();
+      image.setTemporary (true);
+      images.add (image);
+    }
+
+    List<Image> entities = new ArrayList<> (files.length);
+    this.imageRepository.saveAll (images).forEach (i -> {
+      entities.add (i);
+    });
+
+    return entities;
+  }
+
+  private Path resolveImagePath (Long id) {
+    Path subDir = this.fileHelper.resolveFileSubDirectory (id.toString ());
+    Path dir = Paths.get (this.storageImagesPath, subDir.toString ());
+
+    if (!dir.toFile ().mkdirs ()) {
+      logger.error ("Could not create directory {}", dir.toString ());
+      throw new WebAlexandriaException ("Unable to create directory.");
+    }
+
+    return Paths.get (this.storageImagesPath, subDir.toString (),
+        id.toString ());
+  }
+
+  private List<ImageDTO> imageToImageDTO (List<Image> images) {
+    List<ImageDTO> imagesDTO = new ArrayList<> (images.size ());
+    images.forEach (i -> {
+      ImageDTO dto = new ImageDTO ();
+      dto.setId (i.getId ());
+      imagesDTO.add (dto);
+    });
+
+    return imagesDTO;
   }
 
   private List<Image> buildImages (List<ImageDTO> images) {
@@ -131,16 +223,5 @@ public class EditionService {
     });
 
     return entities;
-  }
-
-  private void deleteFilesFromStorage (Edition edition) {
-    edition.getImages ().forEach (i -> {
-      Path path = Paths.get (i.getFilePath ());
-      try {
-        Files.delete (path);
-      } catch (IOException e) {
-        logger.error (e.getMessage (), e);
-      }
-    });
   }
 }
