@@ -8,12 +8,17 @@ import br.org.alexandria.commons.exception.AlexandriaCommonsException;
 
 public class PasswordDigest {
 
+  private MessageDigest messageDigest;
+
   public String encodePassword (String algorithm, String rawPassword,
       String salt, int rounds) {
     this.validateParameters (salt, rounds);
-    MessageDigest md = this.createMessageDigest (algorithm);
 
-    return this.calculateHash (md, rawPassword, salt, rounds);
+    if (this.messageDigest == null) {
+      this.messageDigest = this.createMessageDigest (algorithm);
+    }
+
+    return this.calculateHash (rawPassword, salt, rounds);
   }
 
   private void validateParameters (String salt, int rounds) {
@@ -35,13 +40,12 @@ public class PasswordDigest {
     }
   }
 
-  private String calculateHash (MessageDigest md, String rawPassword,
-      String salt, int rounds) {
+  private String calculateHash (String rawPassword, String salt, int rounds) {
     String hash = "";
     for (int i = 0; i < rounds; i++) {
       String pass = rawPassword + salt + hash;
-      md.update (pass.getBytes (StandardCharsets.UTF_8));
-      byte[] data = md.digest ();
+      this.messageDigest.update (pass.getBytes (StandardCharsets.UTF_8));
+      byte[] data = this.messageDigest.digest ();
 
       StringBuilder builder = new StringBuilder ();
 
