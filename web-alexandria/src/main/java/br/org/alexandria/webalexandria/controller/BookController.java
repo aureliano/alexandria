@@ -62,6 +62,14 @@ public class BookController {
     return ResponseEntity.accepted ().body (book);
   }
 
+  @GetMapping(path = "/api/v1/books/{id}/editions", produces = {
+      "application/json" })
+  public @ResponseBody ResponseEntity<BookDTO> booksIdEditions (
+      @PathVariable Long id) {
+    final BookDTO book = this.bookService.findBookEditionsDTO (id);
+    return ResponseEntity.accepted ().body (book);
+  }
+
   @DeleteMapping(path = "/api/v1/books/{id}", produces = { "application/json" })
   public @ResponseBody ResponseEntity<BookDTO> booksDelete (
       @PathVariable Long id) {

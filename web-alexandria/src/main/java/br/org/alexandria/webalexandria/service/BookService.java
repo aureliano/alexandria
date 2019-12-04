@@ -19,6 +19,8 @@ import br.org.alexandria.commons.helper.WebHelper;
 import br.org.alexandria.webalexandria.domain.Book;
 import br.org.alexandria.webalexandria.domain.Writer;
 import br.org.alexandria.webalexandria.dto.BookDTO;
+import br.org.alexandria.webalexandria.dto.EditionDTO;
+import br.org.alexandria.webalexandria.dto.ImageDTO;
 import br.org.alexandria.webalexandria.dto.PageDTO;
 import br.org.alexandria.webalexandria.dto.WriterDTO;
 import br.org.alexandria.webalexandria.exception.WebAlexandriaException;
@@ -126,6 +128,47 @@ public class BookService {
       w.setId (e.getId ());
       w.setFullName (e.getFullName ());
       dto.getWriters ().add (w);
+    });
+
+    return dto;
+  }
+
+  public BookDTO findBookEditionsDTO (Long id) {
+    Optional<Book> optional = this.bookRepository.findById (id);
+    if (!optional.isPresent ()) {
+      throw new WebAlexandriaException ("Book not found.",
+          HttpStatus.NOT_FOUND);
+    }
+
+    Book book = optional.get ();
+    BookDTO dto = new BookDTO ();
+    dto.setId (book.getId ());
+    dto.setTitle (book.getTitle ());
+    dto.setEditions (new ArrayList<> ());
+
+    book.getEditions ().forEach (e -> {
+      EditionDTO d = new EditionDTO ();
+      d.setBookId (e.getBook ().getId ());
+      d.setEdition (e.getEdition ());
+      d.setHeight (e.getHeight ());
+      d.setId (e.getId ());
+      d.setLanguage (e.getLanguage ());
+      d.setPages (e.getPages ());
+      d.setPublishingCompany (e.getPublishingCompany ());
+      d.setWeight (e.getWeight ());
+      d.setWidth (e.getWidth ());
+      d.setYear (e.getYear ());
+
+      List<ImageDTO> images = new ArrayList<> ();
+      if (!CollectionUtils.isEmpty (e.getImages ())) {
+        e.getImages ().forEach (i -> {
+          ImageDTO img = new ImageDTO ();
+          img.setId (i.getId ());
+        });
+      }
+      d.setImages (images);
+
+      dto.getEditions ().add (d);
     });
 
     return dto;

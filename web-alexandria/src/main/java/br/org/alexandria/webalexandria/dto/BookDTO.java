@@ -12,6 +12,7 @@ public class BookDTO {
   private String title;
   private String synopsis;
   private List<WriterDTO> writers;
+  private List<EditionDTO> editions;
 
   public Long getId () {
     return id;
@@ -43,5 +44,13 @@ public class BookDTO {
 
   public void setWriters (List<WriterDTO> writers) {
     this.writers = writers;
+  }
+
+  public List<EditionDTO> getEditions () {
+    return editions;
+  }
+
+  public void setEditions (List<EditionDTO> editions) {
+    this.editions = editions;
   }
 }
